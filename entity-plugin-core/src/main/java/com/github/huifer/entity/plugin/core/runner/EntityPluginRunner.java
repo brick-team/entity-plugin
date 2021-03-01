@@ -31,7 +31,10 @@ public class EntityPluginRunner implements ApplicationRunner, ApplicationContext
 
   @Override
   public void run(ApplicationArguments args) throws Exception {
-    Map<String, CrudRepository> crudRepositoryMap = context.getBeansOfType(CrudRepository.class);
+    Map<String, CrudRepository> crudRepositoryMap
+        = context.getBeansOfType(CrudRepository.class);
+
+
     crudRepositoryMap.forEach((k, v) -> {
       Class<?>[] repositoryInterfaces = AopProxyUtils.proxiedUserInterfaces(v);
       for (Class<?> repositoryInterface : repositoryInterfaces) {
