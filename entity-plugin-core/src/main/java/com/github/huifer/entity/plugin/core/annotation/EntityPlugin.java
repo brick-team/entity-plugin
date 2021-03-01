@@ -1,6 +1,7 @@
 package com.github.huifer.entity.plugin.core.annotation;
 
 import com.github.huifer.entity.plugin.core.api.EntityConvert;
+import com.github.huifer.entity.plugin.core.api.ValidateApi;
 import java.lang.annotation.ElementType;
 
 /**
@@ -27,4 +28,11 @@ public @interface EntityPlugin {
    * @return class
    */
   Class<? extends EntityConvert> convertClass() default EntityConvert.class;
+
+  /**
+   * {@link ValidateApi} class
+   *
+   * @return class
+   */
+  Class<? extends ValidateApi> validateApiClass() default ValidateApi.class;
 }
