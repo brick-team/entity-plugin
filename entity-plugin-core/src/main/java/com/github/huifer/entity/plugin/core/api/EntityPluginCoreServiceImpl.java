@@ -106,24 +106,24 @@ public class EntityPluginCoreServiceImpl implements
       }
       // 不能再 Spring 容器中搜索
       else {
+        EntityConvert entityConvert;
         try {
-          EntityConvert entityConvert = newInstanceFromEntityConvertClass(
+          entityConvert = newInstanceFromEntityConvertClass(
               convertClass);
-          Object insertDbData = entityConvert.fromInsType(insertParam);
-          return crudRepository.save(insertDbData);
         } catch (Exception e) {
           if (log.isErrorEnabled()) {
-            log.error("无参构造初始化失败");
+            log.error("无参构造初始化失败，{}" + e);
           }
+          return null;
         }
+        Object insertDbData = entityConvert.fromInsType(insertParam);
+        return crudRepository.save(insertDbData);
       }
     }
     // 如果不存在转换器类直接进行插入
     else {
       return crudRepository.save(insertParam);
     }
-
-    return null;
   }
 
   @Override

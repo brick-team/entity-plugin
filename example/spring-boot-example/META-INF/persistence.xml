@@ -6,6 +6,7 @@
   <persistence-unit name="default">
 
     <class>com.github.huifer.entity.plugin.example.entity.OauthClientEntity</class>
+    <class>com.github.huifer.entity.plugin.example.entity.OauthUserEntity</class>
     <properties>
       <property name="hibernate.connection.url"
         value="jdbc:mysql://10.10.0.124:3306/shands_uc_3_back?useUnicode=true&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true&amp;characterEncoding=utf-8"/>
