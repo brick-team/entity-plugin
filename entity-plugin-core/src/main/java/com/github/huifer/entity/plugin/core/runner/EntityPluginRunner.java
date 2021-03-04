@@ -1,14 +1,13 @@
 package com.github.huifer.entity.plugin.core.runner;
 
 import com.github.huifer.entity.plugin.core.annotation.EntityPlugin;
+import com.github.huifer.entity.plugin.core.api.EntityConvert;
 import com.github.huifer.entity.plugin.core.model.EntityPluginCache;
 import com.github.huifer.entity.plugin.core.model.EntityPluginCacheBean;
 import com.github.huifer.entity.plugin.core.utils.InterfaceReflectUtils;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.List;
 import java.util.Map;
-import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -39,7 +38,6 @@ public class EntityPluginRunner implements ApplicationRunner, ApplicationContext
     Map<String, CrudRepository> crudRepositoryMap
         = context.getBeansOfType(CrudRepository.class);
 
-
     crudRepositoryMap.forEach((k, v) -> {
       Class<?>[] repositoryInterfaces = AopProxyUtils.proxiedUserInterfaces(v);
       for (Class<?> repositoryInterface : repositoryInterfaces) {
@@ -59,6 +57,13 @@ public class EntityPluginRunner implements ApplicationRunner, ApplicationContext
             value.setIdClass(interfaceGenericLasses.get(1));
             value.setConvertClass(annotation.convertClass());
             value.setCrudRepository(v);
+
+            try {
+              handlerEntityConvert(annotation.convertClass(), value);
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+
             if (cacheMap.containsKey(annotation.name())) {
               try {
                 if (log.isErrorEnabled()) {
@@ -76,6 +81,43 @@ public class EntityPluginRunner implements ApplicationRunner, ApplicationContext
 
     });
     System.out.println();
+  }
+
+  private void handlerEntityConvert(Class<? extends EntityConvert> convertClass,
+      EntityPluginCache value) throws Exception {
+    Type[] genericInterfaces = convertClass.getGenericInterfaces();
+
+    for (Type genericInterface : genericInterfaces) {
+      if (genericInterface instanceof ParameterizedTypeImpl) {
+        boolean assignableFrom = EntityConvert.class
+            .isAssignableFrom(((ParameterizedTypeImpl) genericInterface).getRawType());
+        if (assignableFrom) {
+          Type[] actualTypeArguments = ((ParameterizedTypeImpl) genericInterface)
+              .getActualTypeArguments();
+
+          if (actualTypeArguments.length == 4) {
+
+            Type nsType = actualTypeArguments[0];
+            Type upType = actualTypeArguments[1];
+            Type resType = actualTypeArguments[2];
+
+            ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+            Class<?> nsTypeClass = contextClassLoader
+                .loadClass(nsType.getTypeName());
+            Class<?> upTypeClass = contextClassLoader
+                .loadClass(resType.getTypeName());
+            Class<?> resTypeClass = contextClassLoader
+                .loadClass(resType.getTypeName());
+
+            value.setInsType(nsTypeClass);
+            value.setUpType(upTypeClass);
+            value.setResType(resTypeClass);
+          }
+
+
+        }
+      }
+    }
   }
 
   @Override

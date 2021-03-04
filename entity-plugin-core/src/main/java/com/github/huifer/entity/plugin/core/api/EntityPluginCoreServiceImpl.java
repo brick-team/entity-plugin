@@ -80,7 +80,8 @@ public class EntityPluginCoreServiceImpl implements
     // 存在转换类的情况下
     if (convertClass != null) {
       EntityConvert entityConvert1 = beanFindService.findEntityConvert(convertClass);
-      Object insertDbData = entityConvert1.fromInsType(insertParam);
+      Object insertDbData = entityConvert1
+          .fromInsType(gson.fromJson(gson.toJson(insertParam), entityPluginCache.getInsType()));
       return crudRepository.save(insertDbData);
     }
     // 如果不存在转换器类直接进行插入
@@ -100,7 +101,8 @@ public class EntityPluginCoreServiceImpl implements
     }
     if (convertClass != null) {
       EntityConvert entityConvert1 = beanFindService.findEntityConvert(convertClass);
-      Object updateDbData = entityConvert1.fromUpType(updateParam);
+      Object updateDbData = entityConvert1
+          .fromUpType(gson.fromJson(gson.toJson(updateParam), entityPluginCache.getUpType()));
       return crudRepository.save(updateDbData);
     }
 

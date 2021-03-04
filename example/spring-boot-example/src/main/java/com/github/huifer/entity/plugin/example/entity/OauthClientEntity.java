@@ -1,6 +1,7 @@
 package com.github.huifer.entity.plugin.example.entity;
 
 import com.github.huifer.entity.plugin.core.annotation.EntityPlugin;
+import com.github.huifer.entity.plugin.example.impl.OauthUserEntityConvert;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -10,7 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@EntityPlugin(name = "oauthClient")
+@EntityPlugin(name = "oauthClient", convertClass = OauthUserEntityConvert.class)
 @Entity
 @Table(name = "oauth_client", schema = "shands_uc_3_back", catalog = "")
 public class OauthClientEntity {

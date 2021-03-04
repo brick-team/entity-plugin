@@ -10,6 +10,33 @@ public class EntityPluginCache {
   private CrudRepository crudRepository;
   private Class<?> self;
   private Class<?> idClass;
+  private Class<?> insType;
+  private Class<?> upType;
+  private Class<?> resType;
+
+  public Class<?> getInsType() {
+    return insType;
+  }
+
+  public void setInsType(Class<?> insType) {
+    this.insType = insType;
+  }
+
+  public Class<?> getUpType() {
+    return upType;
+  }
+
+  public void setUpType(Class<?> upType) {
+    this.upType = upType;
+  }
+
+  public Class<?> getResType() {
+    return resType;
+  }
+
+  public void setResType(Class<?> resType) {
+    this.resType = resType;
+  }
 
   public Class<?> getIdClass() {
     return idClass;

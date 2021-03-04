@@ -1,26 +1,34 @@
 package com.github.huifer.entity.plugin.example.impl;
 
 import com.github.huifer.entity.plugin.core.api.EntityConvert;
-import com.github.huifer.entity.plugin.example.entity.OauthUserEntity;
+import com.github.huifer.entity.plugin.example.entity.OauthClientEntity;
+import com.github.huifer.entity.plugin.example.req.UserAdd;
 import com.google.gson.Gson;
 
 public class OauthUserEntityConvert implements
-    EntityConvert<Object, Object, Object, OauthUserEntity> {
+    EntityConvert<UserAdd, UserAdd, UserAdd, OauthClientEntity> {
 
-    Gson gson = new Gson();
 
   @Override
-  public OauthUserEntity fromInsType(Object o) {
-    return null;
+  public OauthClientEntity fromInsType(UserAdd userAdd) {
+    OauthClientEntity oauthClientEntity = new OauthClientEntity();
+    oauthClientEntity.setRedirectUri(userAdd.getClientId());
+    return oauthClientEntity;
   }
 
   @Override
-  public OauthUserEntity fromUpType(Object o) {
-    return null;
+  public OauthClientEntity fromUpType(UserAdd userAdd) {
+    OauthClientEntity oauthClientEntity = new OauthClientEntity();
+    oauthClientEntity.setId(Long.valueOf(userAdd.getId()));
+    oauthClientEntity.setClientId(userAdd.getClientId());
+    oauthClientEntity.setRedirectUri(userAdd.getClientId());
+    return oauthClientEntity;
   }
 
   @Override
-  public Object fromEntity(OauthUserEntity oauthUserEntity) {
-    return null;
+  public UserAdd fromEntity(OauthClientEntity oauthClientEntity) {
+    UserAdd userAdd = new UserAdd();
+    userAdd.setClientId(oauthClientEntity.getClientId());
+    return userAdd;
   }
 }

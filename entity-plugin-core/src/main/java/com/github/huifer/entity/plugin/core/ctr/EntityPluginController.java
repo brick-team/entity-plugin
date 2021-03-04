@@ -41,6 +41,7 @@ public class EntityPluginController {
   ) throws Exception {
     EntityPluginCache entityPluginCache = entityPluginCacheBean.getCacheMap().get(entityPluginName);
     Class<? extends EntityConvert> convertClass = entityPluginCache.getConvertClass();
+
     if (convertClass != EntityConvert.class) {
       Object save = coreService.save(entityPluginName, insertParam);
       return ResponseEntity.ok(save);
