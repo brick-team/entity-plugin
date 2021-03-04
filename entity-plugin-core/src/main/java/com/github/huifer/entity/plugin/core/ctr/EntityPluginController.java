@@ -29,7 +29,7 @@ public class EntityPluginController {
   public ResponseEntity<Object> findById(
       @PathVariable("entityPluginName") String entityPluginName,
       @PathVariable("id") String id
-  ) {
+  ) throws Exception {
     return ResponseEntity.ok(coreService.findById(entityPluginName, id));
   }
 
@@ -38,7 +38,7 @@ public class EntityPluginController {
   public ResponseEntity<Object> save(
       @PathVariable("entityPluginName") String entityPluginName,
       @RequestBody Object insertParam
-  ) {
+  ) throws Exception {
     EntityPluginCache entityPluginCache = entityPluginCacheBean.getCacheMap().get(entityPluginName);
     Class<? extends EntityConvert> convertClass = entityPluginCache.getConvertClass();
     if (convertClass != EntityConvert.class) {
@@ -56,10 +56,10 @@ public class EntityPluginController {
   public ResponseEntity<Object> update(
       @PathVariable("entityPluginName") String entityPluginName,
       @RequestBody Object updateParam
-  ) {
+  ) throws Exception {
     EntityPluginCache entityPluginCache = entityPluginCacheBean.getCacheMap().get(entityPluginName);
     Class<? extends EntityConvert> convertClass = entityPluginCache.getConvertClass();
-    if (convertClass !=EntityConvert.class) {
+    if (convertClass != EntityConvert.class) {
       Object save = coreService.update(entityPluginName, updateParam);
       return ResponseEntity.ok(save);
     } else {

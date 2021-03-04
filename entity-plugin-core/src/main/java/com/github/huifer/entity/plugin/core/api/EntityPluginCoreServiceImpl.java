@@ -23,8 +23,11 @@ public class EntityPluginCoreServiceImpl implements
   @Autowired
   private EntityPluginCacheBean entityPluginCacheBean;
 
+  @Autowired
+  private BeanFindService beanFindService;
+
   @Override
-  public Object findById(String entityPluginName, String id) {
+  public Object findById(String entityPluginName, String id) throws Exception {
     EntityPluginCache entityPluginCache = entityPluginCacheBean.getCacheMap().get(entityPluginName);
 
     Class<?> idClass = entityPluginCache.getIdClass();
@@ -40,26 +43,9 @@ public class EntityPluginCoreServiceImpl implements
       }
       // 存在转换类的情况下
       if (convertClass != null) {
-
-        String[] beanNamesForType = context.getBeanNamesForType(convertClass);
-        // 在 Spring 中能够搜索到
-        if (beanNamesForType.length > 0) {
-          String beanName = beanNamesForType[0];
-          EntityConvert bean = context.getBean(beanName, convertClass);
-          return bean.fromEntity(byId.get());
-        }
-        // 不能再 Spring 容器中搜索
-        else {
-          try {
-            EntityConvert entityConvert = newInstanceFromEntityConvertClass(
-                convertClass);
-            return entityConvert.fromEntity(byId.get());
-
-          } catch (Exception e) {
-            if (log.isErrorEnabled()) {
-              log.error("无参构造初始化失败");
-            }
-          }
+        EntityConvert entityConvert1 = beanFindService.findEntityConvert(convertClass);
+        if (entityConvert1 != null) {
+          return entityConvert1.fromEntity(byId.get());
         }
       }
       // 不存在转换类的情况下直接将查询结果返回
@@ -83,7 +69,7 @@ public class EntityPluginCoreServiceImpl implements
   }
 
   @Override
-  public Object save(String entityPluginName, Object insertParam) {
+  public Object save(String entityPluginName, Object insertParam) throws Exception {
     EntityPluginCache entityPluginCache = entityPluginCacheBean.getCacheMap().get(entityPluginName);
     CrudRepository crudRepository = entityPluginCache.getCrudRepository();
 
@@ -93,32 +79,9 @@ public class EntityPluginCoreServiceImpl implements
     }
     // 存在转换类的情况下
     if (convertClass != null) {
-
-      String[] beanNamesForType = context.getBeanNamesForType(convertClass);
-      // 在 Spring 中能够搜索到
-      if (beanNamesForType.length > 0) {
-        String beanName = beanNamesForType[0];
-        EntityConvert bean = context.getBean(beanName, convertClass);
-        // 转换成数据库实体对象
-        Object insertDbData = bean.fromInsType(insertParam);
-        // 执行插入
-        return crudRepository.save(insertDbData);
-      }
-      // 不能再 Spring 容器中搜索
-      else {
-        EntityConvert entityConvert;
-        try {
-          entityConvert = newInstanceFromEntityConvertClass(
-              convertClass);
-        } catch (Exception e) {
-          if (log.isErrorEnabled()) {
-            log.error("无参构造初始化失败，{}" + e);
-          }
-          return null;
-        }
-        Object insertDbData = entityConvert.fromInsType(insertParam);
-        return crudRepository.save(insertDbData);
-      }
+      EntityConvert entityConvert1 = beanFindService.findEntityConvert(convertClass);
+      Object insertDbData = entityConvert1.fromInsType(insertParam);
+      return crudRepository.save(insertDbData);
     }
     // 如果不存在转换器类直接进行插入
     else {
@@ -127,7 +90,7 @@ public class EntityPluginCoreServiceImpl implements
   }
 
   @Override
-  public Object update(String entityPluginName, Object updateParam) {
+  public Object update(String entityPluginName, Object updateParam) throws Exception {
     EntityPluginCache entityPluginCache = entityPluginCacheBean.getCacheMap().get(entityPluginName);
     CrudRepository crudRepository = entityPluginCache.getCrudRepository();
 
@@ -136,31 +99,9 @@ public class EntityPluginCoreServiceImpl implements
       return crudRepository.save(updateParam);
     }
     if (convertClass != null) {
-
-      String[] beanNamesForType = context.getBeanNamesForType(convertClass);
-      // 在 Spring 中能够搜索到
-      if (beanNamesForType.length > 0) {
-        String beanName = beanNamesForType[0];
-        EntityConvert bean = context.getBean(beanName, convertClass);
-        // 转换成数据库实体对象
-        Object updateDbData = bean.fromUpType(updateParam);
-        // 执行插入
-        return crudRepository.save(updateDbData);
-      }
-      // 不能再 Spring 容器中搜索
-      else {
-        try {
-          EntityConvert entityConvert = newInstanceFromEntityConvertClass(
-              convertClass);
-          Object updateDbData = entityConvert.fromUpType(updateParam);
-          return crudRepository.save(updateDbData);
-
-        } catch (Exception e) {
-          if (log.isErrorEnabled()) {
-            log.error("无参构造初始化失败");
-          }
-        }
-      }
+      EntityConvert entityConvert1 = beanFindService.findEntityConvert(convertClass);
+      Object updateDbData = entityConvert1.fromUpType(updateParam);
+      return crudRepository.save(updateDbData);
     }
 
     return null;
