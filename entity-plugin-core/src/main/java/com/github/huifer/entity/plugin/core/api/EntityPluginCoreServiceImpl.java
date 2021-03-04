@@ -3,7 +3,6 @@ package com.github.huifer.entity.plugin.core.api;
 import com.github.huifer.entity.plugin.core.model.EntityPluginCache;
 import com.github.huifer.entity.plugin.core.model.EntityPluginCacheBean;
 import com.google.gson.Gson;
-import java.lang.reflect.Constructor;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +27,9 @@ public class EntityPluginCoreServiceImpl implements
 
   @Override
   public Object findById(String entityPluginName, String id) throws Exception {
+    if (log.isInfoEnabled()) {
+      log.info("findById,entityPluginName = {}, id = {}", entityPluginName, id);
+    }
     EntityPluginCache entityPluginCache = entityPluginCacheBean.getCacheMap().get(entityPluginName);
 
     Class<?> idClass = entityPluginCache.getIdClass();
@@ -58,18 +60,13 @@ public class EntityPluginCoreServiceImpl implements
     return null;
   }
 
-  private EntityConvert newInstanceFromEntityConvertClass(
-      Class<? extends EntityConvert> convertClass)
-      throws NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
-    // 尝试寻找无参构造
-    Constructor<? extends EntityConvert> declaredConstructor = convertClass
-        .getDeclaredConstructor();
-    EntityConvert entityConvert = declaredConstructor.newInstance();
-    return entityConvert;
-  }
 
   @Override
   public Object save(String entityPluginName, Object insertParam) throws Exception {
+    if (log.isInfoEnabled()) {
+      log.info("save,entityPluginName = {}, insertParam = {}", entityPluginName,
+          gson.toJson(insertParam));
+    }
     EntityPluginCache entityPluginCache = entityPluginCacheBean.getCacheMap().get(entityPluginName);
     CrudRepository crudRepository = entityPluginCache.getCrudRepository();
 
@@ -92,6 +89,10 @@ public class EntityPluginCoreServiceImpl implements
 
   @Override
   public Object update(String entityPluginName, Object updateParam) throws Exception {
+    if (log.isInfoEnabled()) {
+      log.info("update,entityPluginName = {}, updateParam = {}", entityPluginName,
+          gson.toJson(updateParam));
+    }
     EntityPluginCache entityPluginCache = entityPluginCacheBean.getCacheMap().get(entityPluginName);
     CrudRepository crudRepository = entityPluginCache.getCrudRepository();
 
@@ -111,6 +112,9 @@ public class EntityPluginCoreServiceImpl implements
 
   @Override
   public Boolean deleteById(String entityPluginName, String id) {
+    if (log.isInfoEnabled()) {
+      log.info("deleteById,entityPluginName = {}, id = {}", entityPluginName, id);
+    }
     EntityPluginCache entityPluginCache = entityPluginCacheBean.getCacheMap().get(entityPluginName);
     Class<?> idClass = entityPluginCache.getIdClass();
     Object o = gson.fromJson(id, idClass);

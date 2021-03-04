@@ -80,7 +80,7 @@ public class EntityPluginRunner implements ApplicationRunner, ApplicationContext
       }
 
     });
-    System.out.println();
+    log.info("实体增强插件准备完成");
   }
 
   private void handlerEntityConvert(Class<? extends EntityConvert> convertClass,
