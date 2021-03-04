@@ -1,41 +1,45 @@
 package com.github.huifer.entity.plugin.core.model;
 
 import com.github.huifer.entity.plugin.core.api.EntityConvert;
+import com.github.huifer.entity.plugin.core.api.ValidateApi;
 import org.springframework.data.repository.CrudRepository;
 
 public class EntityPluginCache {
 
   private String name;
   private Class<? extends EntityConvert> convertClass;
+  private Class<? extends ValidateApi> validateApiClass;
   private CrudRepository crudRepository;
+  private ConvertTypeParam convertTypeParam;
+  private ValidateTypeParam validateTypeParam;
   private Class<?> self;
   private Class<?> idClass;
-  private Class<?> insType;
-  private Class<?> upType;
-  private Class<?> resType;
 
-  public Class<?> getInsType() {
-    return insType;
+  public ValidateTypeParam getValidateTypeParam() {
+    return validateTypeParam;
   }
 
-  public void setInsType(Class<?> insType) {
-    this.insType = insType;
+  public void setValidateTypeParam(
+      ValidateTypeParam validateTypeParam) {
+    this.validateTypeParam = validateTypeParam;
   }
 
-  public Class<?> getUpType() {
-    return upType;
+  public ConvertTypeParam getConvertTypeParam() {
+    return convertTypeParam;
   }
 
-  public void setUpType(Class<?> upType) {
-    this.upType = upType;
+  public void setConvertTypeParam(
+      ConvertTypeParam convertTypeParam) {
+    this.convertTypeParam = convertTypeParam;
   }
 
-  public Class<?> getResType() {
-    return resType;
+  public Class<? extends ValidateApi> getValidateApiClass() {
+    return validateApiClass;
   }
 
-  public void setResType(Class<?> resType) {
-    this.resType = resType;
+  public void setValidateApiClass(
+      Class<? extends ValidateApi> validateApiClass) {
+    this.validateApiClass = validateApiClass;
   }
 
   public Class<?> getIdClass() {
@@ -77,5 +81,70 @@ public class EntityPluginCache {
   public void setConvertClass(
       Class<? extends EntityConvert> convertClass) {
     this.convertClass = convertClass;
+  }
+
+
+  public static class ValidateTypeParam {
+
+    private Class<?> insType;
+    private Class<?> upType;
+
+    public ValidateTypeParam(Class<?> insType, Class<?> upType) {
+      this.insType = insType;
+      this.upType = upType;
+    }
+
+    public Class<?> getInsType() {
+      return insType;
+    }
+
+    public void setInsType(Class<?> insType) {
+      this.insType = insType;
+    }
+
+    public Class<?> getUpType() {
+      return upType;
+    }
+
+    public void setUpType(Class<?> upType) {
+      this.upType = upType;
+    }
+  }
+
+  public static class ConvertTypeParam {
+
+    private Class<?> insType;
+    private Class<?> upType;
+    private Class<?> resType;
+
+    public ConvertTypeParam(Class<?> insType, Class<?> upType, Class<?> resType) {
+      this.insType = insType;
+      this.upType = upType;
+      this.resType = resType;
+    }
+
+    public Class<?> getInsType() {
+      return insType;
+    }
+
+    public void setInsType(Class<?> insType) {
+      this.insType = insType;
+    }
+
+    public Class<?> getUpType() {
+      return upType;
+    }
+
+    public void setUpType(Class<?> upType) {
+      this.upType = upType;
+    }
+
+    public Class<?> getResType() {
+      return resType;
+    }
+
+    public void setResType(Class<?> resType) {
+      this.resType = resType;
+    }
   }
 }

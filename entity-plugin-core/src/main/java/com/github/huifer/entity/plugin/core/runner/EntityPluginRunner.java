@@ -2,7 +2,10 @@ package com.github.huifer.entity.plugin.core.runner;
 
 import com.github.huifer.entity.plugin.core.annotation.EntityPlugin;
 import com.github.huifer.entity.plugin.core.api.EntityConvert;
+import com.github.huifer.entity.plugin.core.api.ValidateApi;
 import com.github.huifer.entity.plugin.core.model.EntityPluginCache;
+import com.github.huifer.entity.plugin.core.model.EntityPluginCache.ConvertTypeParam;
+import com.github.huifer.entity.plugin.core.model.EntityPluginCache.ValidateTypeParam;
 import com.github.huifer.entity.plugin.core.model.EntityPluginCacheBean;
 import com.github.huifer.entity.plugin.core.utils.InterfaceReflectUtils;
 import java.lang.reflect.Type;
@@ -56,10 +59,12 @@ public class EntityPluginRunner implements ApplicationRunner, ApplicationContext
             value.setSelf(entityClass);
             value.setIdClass(interfaceGenericLasses.get(1));
             value.setConvertClass(annotation.convertClass());
+            value.setValidateApiClass(annotation.validateApiClass());
             value.setCrudRepository(v);
 
             try {
               handlerEntityConvert(annotation.convertClass(), value);
+              handlerValidate(annotation.validateApiClass(), value);
             } catch (Exception e) {
               e.printStackTrace();
             }
@@ -81,6 +86,37 @@ public class EntityPluginRunner implements ApplicationRunner, ApplicationContext
 
     });
     log.info("实体增强插件准备完成");
+  }
+
+  private void handlerValidate(Class<? extends ValidateApi> validateApiClass,
+      EntityPluginCache value) throws ClassNotFoundException {
+    Type[] genericInterfaces = validateApiClass.getGenericInterfaces();
+    for (Type genericInterface : genericInterfaces) {
+      if (genericInterface instanceof ParameterizedTypeImpl) {
+        boolean assignableFrom = ValidateApi.class
+            .isAssignableFrom(((ParameterizedTypeImpl) genericInterface).getRawType());
+        if (assignableFrom) {
+          Type[] actualTypeArguments = ((ParameterizedTypeImpl) genericInterface)
+              .getActualTypeArguments();
+
+          if (actualTypeArguments.length == 4) {
+
+            Type nsType = actualTypeArguments[0];
+            Type upType = actualTypeArguments[1];
+
+            ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+            Class<?> nsTypeClass = contextClassLoader
+                .loadClass(nsType.getTypeName());
+            Class<?> upTypeClass = contextClassLoader
+                .loadClass(upType.getTypeName());
+            value.setValidateTypeParam(new ValidateTypeParam(nsTypeClass,
+                upTypeClass));
+          }
+
+        }
+      }
+    }
+
   }
 
   private void handlerEntityConvert(Class<? extends EntityConvert> convertClass,
@@ -105,13 +141,12 @@ public class EntityPluginRunner implements ApplicationRunner, ApplicationContext
             Class<?> nsTypeClass = contextClassLoader
                 .loadClass(nsType.getTypeName());
             Class<?> upTypeClass = contextClassLoader
-                .loadClass(resType.getTypeName());
+                .loadClass(upType.getTypeName());
             Class<?> resTypeClass = contextClassLoader
                 .loadClass(resType.getTypeName());
-
-            value.setInsType(nsTypeClass);
-            value.setUpType(upTypeClass);
-            value.setResType(resTypeClass);
+            value.setConvertTypeParam(new ConvertTypeParam(nsTypeClass,
+                upTypeClass,
+                resTypeClass));
           }
 
 
