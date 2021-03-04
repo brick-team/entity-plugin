@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 /**
  * 接口反射工具
@@ -15,6 +16,17 @@ public class InterfaceReflectUtils {
 
   private InterfaceReflectUtils() {
 
+  }
+
+  /**
+   * source is from target?
+   *
+   * @param source
+   * @param target
+   * @return
+   */
+  public static boolean isFrom(Class<?> source, Class<?> target) {
+    return source.isAssignableFrom(target);
   }
 
   public static List<Class<?>> getInterfaceGenericLasses(Class<?> check, Class<?> targetClass) {
@@ -30,18 +42,21 @@ public class InterfaceReflectUtils {
       Type[] types = cur.getGenericInterfaces();
       for (Type type : types) {
 
-        // todo: 修改为可以根据类型进行推论
-        if (type.getTypeName().contains(targetClass.getName())) {
-          Type[] typeArguments = ((ParameterizedType) type).getActualTypeArguments();
-          for (Type typeArgument : typeArguments) {
-            if (typeArgument instanceof Class) {
-              res.add((Class<?>) typeArgument);
-            }
-          }
-          break;
+        if (type instanceof ParameterizedTypeImpl) {
 
+          if (targetClass.isAssignableFrom(((ParameterizedTypeImpl) type).getRawType())) {
+            Type[] typeArguments = ((ParameterizedType) type).getActualTypeArguments();
+            for (Type typeArgument : typeArguments) {
+              if (typeArgument instanceof Class) {
+                res.add((Class<?>) typeArgument);
+              }
+            }
+            break;
+
+          }
         }
       }
+
       Class<?>[] interfaces = cur.getInterfaces();
       if (interfaces != null) {
         for (Class<?> inter : interfaces) {

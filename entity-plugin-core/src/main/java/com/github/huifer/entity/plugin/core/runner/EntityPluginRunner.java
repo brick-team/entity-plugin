@@ -4,8 +4,11 @@ import com.github.huifer.entity.plugin.core.annotation.EntityPlugin;
 import com.github.huifer.entity.plugin.core.model.EntityPluginCache;
 import com.github.huifer.entity.plugin.core.model.EntityPluginCacheBean;
 import com.github.huifer.entity.plugin.core.utils.InterfaceReflectUtils;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.List;
 import java.util.Map;
+import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -17,8 +20,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.Ordered;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.Repository;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 @Component
 public class EntityPluginRunner implements ApplicationRunner, ApplicationContextAware, Ordered {
@@ -40,7 +45,7 @@ public class EntityPluginRunner implements ApplicationRunner, ApplicationContext
       for (Class<?> repositoryInterface : repositoryInterfaces) {
         List<Class<?>> interfaceGenericLasses = InterfaceReflectUtils
             .getInterfaceGenericLasses(repositoryInterface,
-                CrudRepository.class);
+                Repository.class);
         if (!CollectionUtils.isEmpty(interfaceGenericLasses)) {
           // entity class
           Class<?> entityClass = interfaceGenericLasses.get(0);
@@ -70,6 +75,7 @@ public class EntityPluginRunner implements ApplicationRunner, ApplicationContext
       }
 
     });
+    System.out.println();
   }
 
   @Override
