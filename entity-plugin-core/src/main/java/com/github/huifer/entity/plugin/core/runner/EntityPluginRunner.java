@@ -54,9 +54,13 @@ public class EntityPluginRunner implements ApplicationRunner, ApplicationContext
           if (annotation != null) {
 
             Map<String, EntityPluginCache> cacheMap = entityPluginCacheBean.getCacheMap();
+            Map<Class<?>, String> clazzMapValue = entityPluginCacheBean.getClazzMapValue();
+
             EntityPluginCache value = new EntityPluginCache();
+            value.setCacheKey(annotation.cacheKey());
             value.setName(annotation.name());
             value.setSelf(entityClass);
+            clazzMapValue.put(entityClass, annotation.name());
             value.setIdClass(interfaceGenericLasses.get(1));
             value.setConvertClass(annotation.convertClass());
             value.setValidateApiClass(annotation.validateApiClass());

@@ -16,7 +16,7 @@ public class OauthUserEntityValidate implements ValidateApi<UserAdd, UserAdd> {
     if (log.isInfoEnabled()) {
       log.info("validateInsType,userAdd = {}", gson.toJson(userAdd));
     }
-    throw new RuntimeException("validate insert error ");
+//    throw new RuntimeException("validate insert error ");
 
   }
 
@@ -25,6 +25,6 @@ public class OauthUserEntityValidate implements ValidateApi<UserAdd, UserAdd> {
     if (log.isInfoEnabled()) {
       log.info("validateUpType,userAdd = {}", gson.toJson(userAdd));
     }
-    throw new RuntimeException("validate update error ");
+//    throw new RuntimeException("validate update error ");
   }
 }

@@ -5,7 +5,7 @@ import com.github.huifer.entity.plugin.example.entity.OauthClientEntity;
 import com.github.huifer.entity.plugin.example.req.UserAdd;
 
 public class OauthUserEntityConvert implements
-    EntityConvert<UserAdd, UserAdd, UserAdd, OauthClientEntity> {
+    EntityConvert<UserAdd, UserAdd, OauthClientEntity, OauthClientEntity> {
 
 
   @Override
@@ -26,9 +26,7 @@ public class OauthUserEntityConvert implements
   }
 
   @Override
-  public UserAdd fromEntity(OauthClientEntity oauthClientEntity) {
-    UserAdd userAdd = new UserAdd();
-    userAdd.setClientId(oauthClientEntity.getClientId());
-    return userAdd;
+  public OauthClientEntity fromEntity(OauthClientEntity oauthClientEntity) {
+    return oauthClientEntity;
   }
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class OauthUserEntityConvertInSpring implements
-    EntityConvert<UserAdd, UserAdd, UserAdd, OauthClientEntity> {
+    EntityConvert<UserAdd, UserAdd, OauthClientEntity, OauthClientEntity> {
 
   @Autowired
   private ApplicationContext context;
@@ -36,9 +36,7 @@ public class OauthUserEntityConvertInSpring implements
   }
 
   @Override
-  public UserAdd fromEntity(OauthClientEntity oauthClientEntity) {
-    UserAdd userAdd = new UserAdd();
-    userAdd.setClientId(oauthClientEntity.getClientId());
-    return userAdd;
+  public OauthClientEntity fromEntity(OauthClientEntity oauthClientEntity) {
+    return oauthClientEntity;
   }
 }

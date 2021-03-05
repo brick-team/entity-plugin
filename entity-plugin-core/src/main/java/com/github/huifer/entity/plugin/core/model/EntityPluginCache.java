@@ -14,6 +14,15 @@ public class EntityPluginCache {
   private ValidateTypeParam validateTypeParam;
   private Class<?> self;
   private Class<?> idClass;
+  private String cacheKey;
+
+  public String getCacheKey() {
+    return cacheKey;
+  }
+
+  public void setCacheKey(String cacheKey) {
+    this.cacheKey = cacheKey;
+  }
 
   public ValidateTypeParam getValidateTypeParam() {
     return validateTypeParam;

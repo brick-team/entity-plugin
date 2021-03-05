@@ -35,4 +35,7 @@ public @interface EntityPlugin {
    * @return class
    */
   Class<? extends ValidateApi> validateApiClass() default ValidateApi.class;
+
+  String cacheKey() default "";
+
 }
