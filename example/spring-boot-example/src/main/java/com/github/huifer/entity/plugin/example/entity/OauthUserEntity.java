@@ -1,7 +1,7 @@
 package com.github.huifer.entity.plugin.example.entity;
 
 import com.github.huifer.entity.plugin.core.annotation.EntityPlugin;
-import com.github.huifer.entity.plugin.example.impl.OauthUserEntityConvert;
+import com.github.huifer.entity.plugin.example.impl.convert.OauthUserEntityConvert;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;

@@ -1,4 +1,4 @@
-package com.github.huifer.entity.plugin.example.impl;
+package com.github.huifer.entity.plugin.example.impl.convert;
 
 import com.github.huifer.entity.plugin.core.api.EntityConvert;
 import com.github.huifer.entity.plugin.example.entity.OauthClientEntity;
