@@ -1,9 +1,8 @@
 # Entity plugin
-实体增强插件
+实体增强插件, 基于SpringDataJpa开发,通过一个注解的形式来得到单个对象的CRUD操作. 
 
-## todo
-- [x] JPA 更多接口支持
-- [x] 转换接口支持Spring
-- [ ] 验证接口开发
-- [ ] 验证接口支持Spring
-- [ ] 支持redis缓存
+## Feature
+- 支持JPA增删改查操作，无需编写额外的Controller(单表)
+- 支持缓存层
+- 支持自定义数据转换
+- 支持自定义数据验证

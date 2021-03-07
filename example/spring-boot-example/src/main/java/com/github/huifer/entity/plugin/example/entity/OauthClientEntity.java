@@ -13,7 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@EntityPlugin(name = "oauthClient",
+@EntityPlugin(name = "abc",
     convertClass = OauthUserEntityConvertInSpring.class,
     validateApiClass = OauthUserEntityValidate.class,
     cacheKey = "oauth_client"

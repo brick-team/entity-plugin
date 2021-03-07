@@ -44,49 +44,54 @@ public class EntityPluginRunner implements ApplicationRunner, ApplicationContext
     crudRepositoryMap.forEach((k, v) -> {
       Class<?>[] repositoryInterfaces = AopProxyUtils.proxiedUserInterfaces(v);
       for (Class<?> repositoryInterface : repositoryInterfaces) {
-        List<Class<?>> interfaceGenericLasses = InterfaceReflectUtils
-            .getInterfaceGenericLasses(repositoryInterface,
-                Repository.class);
-        if (!CollectionUtils.isEmpty(interfaceGenericLasses)) {
-          // entity class
-          Class<?> entityClass = interfaceGenericLasses.get(0);
-          EntityPlugin annotation = entityClass.getAnnotation(EntityPlugin.class);
-          if (annotation != null) {
+        log.debug("当前正在进行处理的类 = [{}]", repositoryInterface);
+        if (CrudRepository.class.isAssignableFrom(repositoryInterface)) {
+          //  判断是类并且实现了 CrudRepository
+          List<Class<?>> interfaceGenericLasses = InterfaceReflectUtils
+              .getInterfaceGenericLasses(repositoryInterface,
+                  Repository.class);
+          if (!CollectionUtils.isEmpty(interfaceGenericLasses)) {
+            // entity class
+            Class<?> entityClass = interfaceGenericLasses.get(0);
+            EntityPlugin annotation = entityClass.getAnnotation(EntityPlugin.class);
+            if (annotation != null) {
 
-            Map<String, EntityPluginCache> cacheMap = entityPluginCacheBean.getCacheMap();
-            Map<Class<?>, String> clazzMapValue = entityPluginCacheBean.getClazzMapValue();
+              Map<String, EntityPluginCache> cacheMap = entityPluginCacheBean.getCacheMap();
+              Map<Class<?>, String> clazzMapValue = entityPluginCacheBean.getClazzMapValue();
 
-            EntityPluginCache value = new EntityPluginCache();
-            value.setCacheKey(annotation.cacheKey());
-            value.setName(annotation.name());
-            value.setSelf(entityClass);
-            clazzMapValue.put(entityClass, annotation.name());
-            value.setIdClass(interfaceGenericLasses.get(1));
-            value.setConvertClass(annotation.convertClass());
-            value.setValidateApiClass(annotation.validateApiClass());
-            value.setCrudRepository(v);
+              EntityPluginCache value = new EntityPluginCache();
+              value.setCacheKey(annotation.cacheKey());
+              value.setName(annotation.name());
+              value.setSelf(entityClass);
+              clazzMapValue.put(entityClass, annotation.name());
+              value.setIdClass(interfaceGenericLasses.get(1));
+              value.setConvertClass(annotation.convertClass());
+              value.setValidateApiClass(annotation.validateApiClass());
+              value.setCrudRepository(v);
 
-            try {
-              handlerEntityConvert(annotation.convertClass(), value);
-              handlerValidate(annotation.validateApiClass(), value);
-            } catch (Exception e) {
-              e.printStackTrace();
-            }
-
-            if (cacheMap.containsKey(annotation.name())) {
               try {
-                if (log.isErrorEnabled()) {
-                  log.error("不允许出现相同的EntityPlugin名称 ,entity = [{}]", entityClass);
-                }
-                throw new Exception("不允许出现相同的EntityPlugin名称");
+                handlerEntityConvert(annotation.convertClass(), value);
+                handlerValidate(annotation.validateApiClass(), value);
               } catch (Exception e) {
                 e.printStackTrace();
               }
+
+              if (cacheMap.containsKey(annotation.name())) {
+                try {
+                  if (log.isErrorEnabled()) {
+                    log.error("不允许出现相同的EntityPlugin名称 ,entity = [{}]", entityClass);
+                  }
+                  throw new Exception("不允许出现相同的EntityPlugin名称");
+                } catch (Exception e) {
+                  e.printStackTrace();
+                }
+              }
+              cacheMap.put(annotation.name(), value);
             }
-            cacheMap.put(annotation.name(), value);
           }
         }
       }
+
 
     });
     log.info("实体增强插件准备完成");

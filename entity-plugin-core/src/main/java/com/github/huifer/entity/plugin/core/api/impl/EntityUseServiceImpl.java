@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+
 @Service
 public class EntityUseServiceImpl implements
     EntityUseService {
@@ -31,6 +32,7 @@ public class EntityUseServiceImpl implements
     String entityName = getEntityName(clazz);
     try {
       String cacheKey = getCacheKey(entityName);
+      // 如果存在缓存key 说明需要进行数据库 +缓存操作
       if (StringUtils.hasLength(cacheKey)) {
         String redisData = (String) stringRedisTemplate.opsForHash().get(cacheKey, id);
         if (StringUtils.hasLength(redisData)) {
@@ -41,7 +43,8 @@ public class EntityUseServiceImpl implements
           return (T) byId;
         }
       }
-
+      // 直接从数据库查询
+      return (T) entityPluginCoreService.findById(entityName, id);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -63,7 +66,6 @@ public class EntityUseServiceImpl implements
       if (StringUtils.hasLength(cacheKey)) {
         // save db
         Object data = entityPluginCoreService.save(entityName, insertParam);
-
         String id = null;
         if (data instanceof ID) {
           Object id1 = ((ID) data).getId();
@@ -112,6 +114,8 @@ public class EntityUseServiceImpl implements
   @Override
   public Boolean deleteById(String id, Class<?> clazz) {
     String entityName = getEntityName(clazz);
+    String cacheKey = getCacheKey(entityName);
+    stringRedisTemplate.opsForHash().delete(cacheKey, id);
     return entityPluginCoreService.deleteById(entityName, id);
   }
 

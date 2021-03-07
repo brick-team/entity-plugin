@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +23,15 @@ import org.springframework.core.PriorityOrdered;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+/**
+ * todo: class 缓存结构
+ */
 @Service
 public class BeanFindServiceImpl implements BeanFindService {
 
   private static final Logger log = LoggerFactory.getLogger(BeanFindServiceImpl.class);
+  private static final Map<Class<?>, EntityConvert> entityConvertMap = new ConcurrentHashMap<>(64);
+  private static final Map<Class<?>, ValidateApi> validateApiMap = new ConcurrentHashMap<>(64);
   @Autowired
   private ApplicationContext context;
 
@@ -37,6 +43,15 @@ public class BeanFindServiceImpl implements BeanFindService {
     if (clazz == null) {
       throw new RuntimeException("ValidateApi class is null");
     }
+
+    ValidateApi cacheValidateApi = validateApiMap.get(clazz);
+    if (cacheValidateApi != null) {
+      if (log.isDebugEnabled()) {
+        log.debug("对象检查接口在缓存中存在");
+      }
+      return cacheValidateApi;
+    }
+
     List<String> beanNamesByType = this.findBeanNamesByType(clazz);
     if (CollectionUtils.isEmpty(beanNamesByType)) {
       return classGenValidateApi(clazz);
@@ -45,6 +60,7 @@ public class BeanFindServiceImpl implements BeanFindService {
     if (validateApi == null) {
       return classGenValidateApi(clazz);
     }
+    validateApiMap.put(clazz, validateApi);
     return validateApi;
   }
 
@@ -62,6 +78,16 @@ public class BeanFindServiceImpl implements BeanFindService {
     if (clazz == null) {
       throw new RuntimeException("EntityConvert class is null");
     }
+
+    EntityConvert cacheEntityConvert = entityConvertMap.get(clazz);
+    if (cacheEntityConvert != null) {
+      if (log.isDebugEnabled()) {
+
+        log.debug("类型转换在缓存中存在");
+      }
+      return cacheEntityConvert;
+    }
+
     List<String> beanNamesByType = this.findBeanNamesByType(clazz);
     if (CollectionUtils.isEmpty(beanNamesByType)) {
       return classGenEntityConvert(clazz);
@@ -71,6 +97,7 @@ public class BeanFindServiceImpl implements BeanFindService {
     if (entityConvert == null) {
       return classGenEntityConvert(clazz);
     }
+    entityConvertMap.put(clazz, entityConvert);
     return entityConvert;
 
   }
