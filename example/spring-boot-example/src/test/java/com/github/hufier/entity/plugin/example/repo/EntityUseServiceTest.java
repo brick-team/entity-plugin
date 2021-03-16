@@ -36,5 +36,9 @@ public class EntityUseServiceTest {
     byId2.setClientId("bac");
     entityUseService.update(byId2, byId2.getClass());
   }
+  @Test
+  void saveTUser(){
+  
+  }
 
 }

@@ -1,8 +1,5 @@
 package com.github.huifer.entity.plugin.example.entity;
 
-import com.github.huifer.entity.plugin.core.annotation.EntityPlugin;
-import com.github.huifer.entity.plugin.example.impl.convert.OauthUserEntityConvert;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,13 +7,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.util.Objects;
 
-@EntityPlugin(name = "oauth_user", convertClass = OauthUserEntityConvert.class)
 @Entity
-@Table(name = "oauth_user", schema = "shands_uc_3_back", catalog = "")
-public class OauthUserEntity implements Serializable {
+@Table(name = "t_dept", schema = "shands_uc_3_back", catalog = "")
+public class TDeptEntity {
     
     private Long id;
     
@@ -52,7 +47,7 @@ public class OauthUserEntity implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        OauthUserEntity that = (OauthUserEntity) o;
+        TDeptEntity that = (TDeptEntity) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
     

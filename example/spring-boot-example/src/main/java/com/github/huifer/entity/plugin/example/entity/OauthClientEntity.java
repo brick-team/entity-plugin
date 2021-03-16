@@ -4,6 +4,8 @@ import com.github.huifer.entity.plugin.core.annotation.EntityPlugin;
 import com.github.huifer.entity.plugin.core.api.ID;
 import com.github.huifer.entity.plugin.example.impl.convert.OauthUserEntityConvertInSpring;
 import com.github.huifer.entity.plugin.example.impl.validate.OauthUserEntityValidate;
+
+import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -20,7 +22,7 @@ import javax.persistence.Table;
 )
 @Entity
 @Table(name = "oauth_client", schema = "shands_uc_3_back", catalog = "")
-public class OauthClientEntity implements ID {
+public class OauthClientEntity implements ID, Serializable {
 
   private Long id;
   private String clientId;
