@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 @EntityPlugin(name = "oauth_user", convertClass = OauthUserEntityConvert.class)
 @Entity
-@Table(name = "oauth_user", schema = "shands_uc_3_back", catalog = "")
+@Table(name = "oauth_user",  catalog = "")
 public class OauthUserEntity {
 
   private Long id;

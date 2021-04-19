@@ -19,7 +19,7 @@ import javax.persistence.Table;
     cacheKey = "oauth_client"
 )
 @Entity
-@Table(name = "oauth_client", schema = "shands_uc_3_back", catalog = "")
+@Table(name = "oauth_client",  catalog = "")
 public class OauthClientEntity implements ID {
 
   private Long id;

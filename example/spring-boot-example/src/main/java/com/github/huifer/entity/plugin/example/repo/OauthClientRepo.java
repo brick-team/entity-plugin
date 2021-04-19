@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OauthClientRepo extends B, JpaRepository<OauthClientEntity, Long> {
+public interface OauthClientRepo extends  JpaRepository<OauthClientEntity, Long> {
 
 }
