@@ -8,6 +8,8 @@
   <artifactId>entity-plugin</artifactId>
   <packaging>pom</packaging>
   <version>1.0.0-Releases</version>
+  <description>JPA entity plugins.</description>
+  <name>JpaEntityPlugin</name>
   <modules>
     <module>example</module>
     <module>entity-plugin-core</module>
